@@ -15,7 +15,9 @@ import {
   Target,
   TrendingUp,
   CheckCircle,
-  Loader2
+  Loader2,
+  LogOut,
+  ChevronDown
 } from 'lucide-react';
 import Link from 'next/link';
 import { useProfile } from '@/contexts/ProfileContext';
@@ -46,12 +48,13 @@ interface Profile {
 }
 
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const router = useRouter();
   const { activeProfile, profiles } = useProfile();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewingDocument, setViewingDocument] = useState<{id: string, content: string, kind: string} | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Redirect to sign-in if not authenticated
   useEffect(() => {
@@ -68,6 +71,19 @@ export default function DashboardPage() {
       loadDocuments();
     }
   }, [activeProfile, user]); // Reload documents when active profile changes or user loads
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (showUserMenu && !target.closest('.user-menu')) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showUserMenu]);
 
   const loadDocuments = async () => {
     setIsLoading(true);
@@ -98,6 +114,9 @@ export default function DashboardPage() {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+  };
 
   const handleViewDocument = async (documentId: string) => {
     try {
@@ -240,7 +259,7 @@ export default function DashboardPage() {
               </div>
             </div>
             
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               {activeProfile ? (
                 <Link href={`/create?profile_id=${activeProfile.id}`}>
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium">
@@ -256,6 +275,38 @@ export default function DashboardPage() {
                   </Button>
                 </Link>
               )}
+              
+              {/* User Menu */}
+              <div className="relative user-menu">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="hidden md:block">{user?.name}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                    <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
+                      {user?.email}
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
