@@ -314,11 +314,35 @@ What We Offer:
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate documents');
+        const responseText = await response.text();
+        console.error('API Error Response:', responseText);
+        
+        let errorMessage = 'Failed to generate documents';
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = `API Error (${response.status}): ${responseText || 'No response body'}`;
+        }
+        
+        throw new Error(errorMessage);
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log('API Response:', responseText);
+      
+      if (!responseText.trim()) {
+        throw new Error('Empty response from server');
+      }
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
+      }
+      
       setGeneratedDocuments(data);
       
     } catch (error) {

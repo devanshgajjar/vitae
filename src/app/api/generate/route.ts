@@ -8,8 +8,15 @@ import { getDemoProfileData } from '@/lib/demo-profile';
 import { GenerateRequest, GenerateResponse, Profile, DocumentKind } from '@/types';
 
 export async function POST(request: NextRequest) {
+  console.log('📝 Generate API called');
+  
   try {
     const body: GenerateRequest = await request.json();
+    console.log('📋 Request body:', { 
+      profile_id: body.profile_id, 
+      has_job_description: !!body.job_description,
+      has_options: !!body.options 
+    });
     
     // Validate request
     if (!body.profile_id || !body.job_description || !body.options) {
@@ -66,15 +73,28 @@ export async function POST(request: NextRequest) {
       };
     }
 
+    // Check if OpenAI is available
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('❌ No OpenAI API key found');
+      return NextResponse.json(
+        { error: 'AI service not configured. Please check OpenAI API key.' },
+        { status: 500 }
+      );
+    }
+
+    console.log('🔍 Starting fit analysis...');
     // Generate fit analysis
     const fitAnalysis = await analyzeFit(typedProfile, body.job_description);
+    console.log('✅ Fit analysis completed');
 
+    console.log('📄 Starting resume generation...');
     // Generate resume
     const resumeResult = await generateResume(
       typedProfile,
       body.job_description,
       body.options
     );
+    console.log('✅ Resume generation completed');
 
     // Generate cover letter
     const coverLetterResult = await generateCoverLetter(
@@ -192,11 +212,20 @@ export async function POST(request: NextRequest) {
       document_id: resumeDoc.id // Return resume doc ID as primary
     };
 
+    console.log('✅ Successfully generated documents');
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error in generate API:', error);
+    console.error('❌ Error in generate API:', error);
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
+    
+    // Ensure we always return valid JSON
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to generate documents' },
+      { 
+        error: 'Failed to generate documents', 
+        details: errorMessage,
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }
