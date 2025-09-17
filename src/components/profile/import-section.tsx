@@ -97,14 +97,26 @@ export default function ImportSection({ onImportData, className = '' }: ImportSe
           {
             name: 'E-commerce Platform',
             role: 'Full-Stack Developer',
-            description: 'Built a complete e-commerce platform with React frontend and Node.js backend',
-            link: 'https://github.com/johndoe/ecommerce-platform'
+            scope: 'Built a complete e-commerce platform with React frontend and Node.js backend',
+            top_achievements: [
+              'Implemented secure payment processing with Stripe',
+              'Achieved 99.9% uptime with proper error handling',
+              'Scaled to handle 10K+ concurrent users'
+            ],
+            tools: ['React', 'Node.js', 'PostgreSQL', 'Stripe', 'AWS'],
+            url: 'https://github.com/johndoe/ecommerce-platform'
           },
           {
             name: 'AI Chat Assistant',
             role: 'Lead Developer',
-            description: 'Developed an AI-powered chat assistant using OpenAI API and React',
-            link: 'https://github.com/johndoe/ai-chat-assistant'
+            scope: 'Developed an AI-powered chat assistant using OpenAI API and React',
+            top_achievements: [
+              'Integrated OpenAI GPT-4 for natural conversations',
+              'Built real-time chat interface with WebSocket',
+              'Implemented context-aware response generation'
+            ],
+            tools: ['React', 'TypeScript', 'OpenAI API', 'WebSocket', 'Node.js'],
+            url: 'https://github.com/johndoe/ai-chat-assistant'
           }
         ],
         evidence: []
