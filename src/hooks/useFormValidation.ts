@@ -7,7 +7,8 @@ import {
   validateTextContent, 
   validateDate, 
   validateSkills,
-  ValidationResult 
+  ValidationResult,
+  ValidationWarning
 } from '@/lib/validation';
 import { ProfileFormData } from '@/types';
 
@@ -175,12 +176,22 @@ export function useFormValidation(formData: ProfileFormData): FormValidationResu
       }),
       top_achievements: {
         isValid: project.top_achievements && project.top_achievements.length >= 2,
-        warnings: project.top_achievements && project.top_achievements.length < 3 ? ['Consider adding more achievements to strengthen your project'] : [],
+        warnings: project.top_achievements && project.top_achievements.length < 3 ? [{
+          field: 'project achievements',
+          type: 'completeness',
+          severity: 'medium',
+          message: 'Consider adding more achievements to strengthen your project'
+        }] : [],
         suggestions: project.top_achievements && project.top_achievements.length === 0 ? ['Add at least 2 key achievements for this project'] : []
       },
       tools: {
         isValid: project.tools && project.tools.length >= 3,
-        warnings: project.tools && project.tools.length < 5 ? ['Consider adding more technologies to show your tech stack'] : [],
+        warnings: project.tools && project.tools.length < 5 ? [{
+          field: 'project tools',
+          type: 'completeness',
+          severity: 'medium',
+          message: 'Consider adding more technologies to show your tech stack'
+        }] : [],
         suggestions: project.tools && project.tools.length === 0 ? ['Add at least 3 technologies used in this project'] : []
       },
       url: project.url ? validateUrl(project.url) : {
