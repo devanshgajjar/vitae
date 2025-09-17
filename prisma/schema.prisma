@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -17,13 +17,13 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
-  session_state     String?
+  id_token          String? @db.Text
+  session_state     String? @db.Text
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -89,7 +89,7 @@ model Document {
   profile_id   String
   kind         DocumentKind
          jd_hash      String         // Hash of the job description for caching
-         content_md   String         // Markdown content
+         content_md   String @db.Text // Markdown content
   trace_mapping Json          // TraceMapping[]
   options      Json           // GenerationOptions
   fit_analysis Json           // FitAnalysis
@@ -108,8 +108,8 @@ model DocumentVersion {
   id              String   @id @default(cuid())
   document_id     String
   version_number  Int
-  content_md      String
-  changes_summary String
+  content_md      String @db.Text
+  changes_summary String @db.Text
   created_at      DateTime @default(now())
   
   document        Document @relation(fields: [document_id], references: [id], onDelete: Cascade)
