@@ -116,9 +116,9 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers,
   callbacks: {
-    session: async ({ session, user }: { session: any; user: any }) => {
-      if (session?.user) {
-        session.user.id = user.id;
+    session: async ({ session, token }: { session: any; token: any }) => {
+      if (session?.user && token?.uid) {
+        session.user.id = token.uid;
       }
       return session;
     },
@@ -130,7 +130,7 @@ export const authOptions = {
     },
   },
   session: {
-    strategy: 'database' as const,
+    strategy: 'jwt' as const,
   },
   pages: {
     signIn: '/auth/signin',
