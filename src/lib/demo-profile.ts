@@ -93,25 +93,27 @@ export const getDemoProfileData = () => {
         id: '1',
         name: 'E-commerce Platform',
         role: 'Full Stack Developer',
-        description: 'Full-stack e-commerce platform with React frontend, Node.js backend, and Stripe payment integration. Achieved 99.9% uptime with proper error handling and monitoring.',
-        impact_metric: {
-          name: 'User Growth',
-          value: '250',
-          unit: '% increase'
-        },
-        link: 'https://github.com/alexchen/ecommerce-platform'
+        scope: 'Full-stack e-commerce platform with React frontend, Node.js backend, and Stripe payment integration.',
+        top_achievements: [
+          'Achieved 99.9% uptime with proper error handling and monitoring',
+          '250% increase in user growth',
+          'Integrated Stripe payment processing with fraud detection'
+        ],
+        tools: ['React', 'Node.js', 'Stripe', 'PostgreSQL', 'AWS'],
+        url: 'https://github.com/alexchen/ecommerce-platform'
       },
       {
         id: '2',
         name: 'Real-time Chat Application',
         role: 'Lead Developer',
-        description: 'Collaborative chat application with real-time messaging, file sharing, and video calls using WebSocket connections and WebRTC.',
-        impact_metric: {
-          name: 'Message Throughput',
-          value: '10K',
-          unit: 'messages/minute'
-        },
-        link: 'https://github.com/alexchen/realtime-chat'
+        scope: 'Collaborative chat application with real-time messaging, file sharing, and video calls using WebSocket connections and WebRTC.',
+        top_achievements: [
+          'Handled 10K messages per minute throughput',
+          'Implemented WebRTC for video calls with 99% success rate',
+          'Built file sharing with drag-and-drop interface'
+        ],
+        tools: ['WebSocket', 'WebRTC', 'React', 'Node.js', 'MongoDB'],
+        url: 'https://github.com/alexchen/realtime-chat'
       }
     ],
     evidence: []
