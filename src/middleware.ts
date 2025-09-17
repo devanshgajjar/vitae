@@ -1,30 +1,12 @@
-import { withAuth } from "next-auth/middleware"
+// Middleware completely disabled for demo purposes
+// This prevents any authentication-related redirects
 
-export default withAuth(
-  function middleware() {
-    // Add any additional middleware logic here
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        // For demo purposes, allow access to all pages
-        // This bypasses authentication while keeping the system in place
-        return true
-      },
-    },
-  }
-)
+export default function middleware() {
+  // No authentication middleware - allow all requests
+  return null;
+}
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  // Don't match any routes - effectively disables middleware
+  matcher: [],
 }
