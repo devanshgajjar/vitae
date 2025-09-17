@@ -14,10 +14,10 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-gray-900">Vitae AI</h1>
             </div>
             <div className="flex space-x-4">
-              <Link href="/auth/signin">
-                <Button variant="outline">Sign In</Button>
+              <Link href="/dashboard">
+                <Button variant="outline">Dashboard</Button>
               </Link>
-              <Link href="/auth/signin">
+              <Link href="/onboarding">
                 <Button>Get Started</Button>
               </Link>
             </div>
@@ -36,15 +36,15 @@ export default function HomePage() {
             Ethical AI that never fabricates — only enhances what you&apos;ve actually accomplished.
           </p>
           <div className="flex justify-center space-x-4">
-            <Link href="/auth/signin">
+            <Link href="/onboarding">
               <Button size="lg" className="px-8 py-4 text-lg">
                 <Sparkles className="mr-2 h-5 w-5" />
                 Start Building Your Profile
               </Button>
             </Link>
-            <Link href="/auth/signin">
+            <Link href="/create">
               <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-                View Demo
+                Try Demo
               </Button>
             </Link>
           </div>
@@ -178,7 +178,7 @@ export default function HomePage() {
             Join thousands of professionals who&apos;ve upgraded their job search 
             with ethical AI-powered document generation.
           </p>
-          <Link href="/auth/signin">
+          <Link href="/onboarding">
             <Button size="lg" variant="secondary" className="px-8 py-4 text-lg">
               Get Started for Free
             </Button>

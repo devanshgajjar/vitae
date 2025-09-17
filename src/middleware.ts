@@ -7,18 +7,9 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        // Allow access to auth pages without token
-        if (req.nextUrl.pathname.startsWith('/auth/')) {
-          return true
-        }
-        
-        // Allow access to public pages
-        if (req.nextUrl.pathname === '/') {
-          return true
-        }
-        
-        // Require token for protected pages
-        return !!token
+        // For demo purposes, allow access to all pages
+        // This bypasses authentication while keeping the system in place
+        return true
       },
     },
   }
