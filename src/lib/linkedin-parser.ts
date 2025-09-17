@@ -110,8 +110,10 @@ export function transformLinkedInData(linkedinData: LinkedInProfileData): Profil
     profile.projects = linkedinData.projects.values.map((project) => ({
       name: project.name || '',
       role: 'Contributor', // Default role since LinkedIn doesn't specify
-      description: project.description || '',
-      link: project.url || ''
+      scope: project.description || '',
+      top_achievements: [],
+      tools: [],
+      url: project.url || ''
     }));
   }
 

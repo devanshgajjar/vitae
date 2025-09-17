@@ -452,15 +452,17 @@ function extractProjects(lines: string[], profileData: ProfileFormData) {
         const project = {
           name: originalLine,
           role: 'Developer', // Default role
-          description: '',
-          link: ''
+          scope: '',
+          top_achievements: [],
+          tools: [],
+          url: ''
         };
         
         // Look for description in next few lines
         for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) {
           const nextLine = lines[j];
           if (nextLine.startsWith('•') || nextLine.startsWith('-')) {
-            project.description = nextLine.replace(/^[•\-]\s*/, '').trim();
+            project.scope = nextLine.replace(/^[•\-]\s*/, '').trim();
             break;
           }
         }
@@ -468,7 +470,7 @@ function extractProjects(lines: string[], profileData: ProfileFormData) {
         // Look for GitHub or project URLs
         const urlMatch = originalLine.match(/(https?:\/\/[^\s]+)/);
         if (urlMatch) {
-          project.link = urlMatch[0];
+          project.url = urlMatch[0];
         }
         
         profileData.projects.push(project);

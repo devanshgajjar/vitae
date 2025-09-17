@@ -52,8 +52,11 @@ ${profile.projects.length > 0 ? `## Notable Projects
 ${profile.projects.map(proj => `
 ### ${proj.name}
 **Role:** ${proj.role}
-${proj.description}
-${proj.link ? `**Link:** ${proj.link}` : ''}
+${proj.scope}
+${proj.top_achievements.length > 0 ? `**Key Achievements:**
+${proj.top_achievements.map(achievement => `• ${achievement}`).join('\n')}` : ''}
+${proj.tools.length > 0 ? `**Technologies:** ${proj.tools.join(', ')}` : ''}
+${proj.url ? `**Link:** ${proj.url}` : ''}
 `).join('\n')}` : ''}`;
 
     const mockTraceMapping: TraceMapping[] = [
@@ -317,7 +320,7 @@ Key Skills: ${profile.skills.hard_skills.slice(0, 8).join(', ')}
 
 Notable Projects:
 ${profile.projects.slice(0, 2).map(proj => 
-  `${proj.name}: ${proj.description} (${proj.role})`
+  `${proj.name}: ${proj.scope} (${proj.role})`
 ).join('\n')}
 
 Create a compelling cover letter that maps the candidate's experience to this specific role.`;

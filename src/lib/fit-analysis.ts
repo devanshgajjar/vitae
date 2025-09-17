@@ -80,7 +80,7 @@ ${profile.education.map(edu =>
 
 Projects:
 ${profile.projects.map(proj => 
-  `- ${proj.name}: ${proj.description} (${proj.role})`
+  `- ${proj.name}: ${proj.scope} (${proj.role})`
 ).join('\n')}
 
 JOB REQUIREMENTS:

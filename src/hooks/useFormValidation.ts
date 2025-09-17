@@ -178,8 +178,8 @@ export function useFormValidation(formData: ProfileFormData): FormValidationResu
         isValid: project.top_achievements && project.top_achievements.length >= 2,
         warnings: project.top_achievements && project.top_achievements.length < 3 ? [{
           field: 'project achievements',
-          type: 'completeness',
-          severity: 'medium',
+          type: 'completeness' as const,
+          severity: 'medium' as const,
           message: 'Consider adding more achievements to strengthen your project'
         }] : [],
         suggestions: project.top_achievements && project.top_achievements.length === 0 ? ['Add at least 2 key achievements for this project'] : []
@@ -188,8 +188,8 @@ export function useFormValidation(formData: ProfileFormData): FormValidationResu
         isValid: project.tools && project.tools.length >= 3,
         warnings: project.tools && project.tools.length < 5 ? [{
           field: 'project tools',
-          type: 'completeness',
-          severity: 'medium',
+          type: 'completeness' as const,
+          severity: 'medium' as const,
           message: 'Consider adding more technologies to show your tech stack'
         }] : [],
         suggestions: project.tools && project.tools.length === 0 ? ['Add at least 3 technologies used in this project'] : []
