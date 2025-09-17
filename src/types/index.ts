@@ -36,13 +36,10 @@ export interface Project {
   id: string;
   name: string;
   role: string;
-  impact_metric?: {
-    name: string;
-    value: string;
-    unit: string;
-  };
-  link?: string;
-  description: string;
+  scope: string; // 1-2 line description
+  top_achievements: string[]; // <=3 bullet points
+  tools: string[]; // <=6 tools/technologies
+  url?: string; // Optional project URL
 }
 
 export interface Evidence {
