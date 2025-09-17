@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { verifyJWT } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
-    // For authenticated users, use session user ID
-    // For demo mode, allow specified user_id
-    const targetUserId = session?.user?.id || userId;
+    // Get user from JWT token
+    const token = request.cookies.get('auth_token')?.value;
+    let targetUserId = userId; // Allow demo mode
+    
+    if (token) {
+      const user = await verifyJWT(token);
+      if (user) {
+        targetUserId = user.uid; // Use authenticated user ID
+      }
+    }
 
     if (!targetUserId) {
       return NextResponse.json(
