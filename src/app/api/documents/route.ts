@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (token) {
       const user = await verifyJWT(token);
       if (user) {
-        targetUserId = user.uid; // Use authenticated user ID
+        targetUserId = user.id; // Use authenticated user ID
       }
     }
 
