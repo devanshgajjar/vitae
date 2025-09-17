@@ -148,8 +148,10 @@ export default function ProfileForm({
       projects: [...prev.projects, {
         name: '',
         role: '',
-        description: '',
-        link: ''
+        scope: '',
+        top_achievements: [],
+        tools: [],
+        url: ''
       }]
     }));
   };
@@ -588,19 +590,38 @@ export default function ProfileForm({
               </div>
               
               <div>
-                <Label>Description</Label>
+                <Label>Project Description</Label>
                 <Textarea
-                  value={proj.description}
-                  onChange={(e) => updateProject(index, 'description', e.target.value)}
+                  value={proj.scope}
+                  onChange={(e) => updateProject(index, 'scope', e.target.value)}
                   placeholder="Brief description of the project and your contributions"
                 />
               </div>
               
               <div>
-                <Label>Link (optional)</Label>
+                <Label>Key Achievements</Label>
+                <Textarea
+                  value={proj.top_achievements?.join('\n') || ''}
+                  onChange={(e) => updateProject(index, 'top_achievements', e.target.value.split('\n').filter(a => a.trim()))}
+                  placeholder="List your key achievements for this project, one per line"
+                  rows={3}
+                />
+              </div>
+              
+              <div>
+                <Label>Technologies Used</Label>
                 <Input
-                  value={proj.link}
-                  onChange={(e) => updateProject(index, 'link', e.target.value)}
+                  value={proj.tools?.join(', ') || ''}
+                  onChange={(e) => updateProject(index, 'tools', e.target.value.split(',').map(t => t.trim()).filter(t => t))}
+                  placeholder="React, Node.js, PostgreSQL, AWS"
+                />
+              </div>
+              
+              <div>
+                <Label>Project URL (optional)</Label>
+                <Input
+                  value={proj.url || ''}
+                  onChange={(e) => updateProject(index, 'url', e.target.value)}
                   placeholder="https://github.com/username/project or https://project-demo.com"
                 />
               </div>
