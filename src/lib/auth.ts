@@ -22,8 +22,10 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 export async function createUser(email: string, password: string, name?: string): Promise<User> {
+  console.log('🔐 Hashing password...');
   const hashedPassword = await hashPassword(password);
   
+  console.log('💾 Creating user in database...');
   const user = await prisma.user.create({
     data: {
       email,
@@ -39,6 +41,7 @@ export async function createUser(email: string, password: string, name?: string)
     }
   });
 
+  console.log('✅ User created successfully:', user.id);
   return {
     id: user.id,
     email: user.email!,

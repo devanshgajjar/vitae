@@ -4,27 +4,33 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🔄 Signup API called');
     const { email, password, name } = await request.json();
+    console.log('📧 Signup attempt for email:', email);
 
     if (!email || !password) {
+      console.log('❌ Missing email or password');
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
       );
     }
 
+    console.log('🔍 Checking if user exists...');
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email }
     });
 
     if (existingUser) {
+      console.log('❌ User already exists:', email);
       return NextResponse.json(
         { error: 'User already exists' },
         { status: 400 }
       );
     }
 
+    console.log('👤 Creating new user...');
     const user = await createUser(email, password, name);
     const token = await createJWT(user);
 
