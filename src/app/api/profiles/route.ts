@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { verifyJWT } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { ProfileFormData } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
-    // For authenticated users, use session user ID
-    // For demo mode, allow specified user_id
-    const targetUserId = session?.user?.id || userId;
+    // Demo mode handling
+    if (userId === 'demo-user-123') {
+      return NextResponse.json({ profiles: [] });
+    }
+
+    // Get user from JWT token  
+    const token = request.cookies.get('auth_token')?.value;
+    let targetUserId = userId; // Allow demo mode
+    
+    if (token) {
+      const user = await verifyJWT(token);
+      if (user) {
+        targetUserId = user.uid; // Use authenticated user ID
+      }
+    }
 
     if (!targetUserId) {
       return NextResponse.json(
@@ -41,7 +51,7 @@ export async function POST(request: NextRequest) {
   let profile_data: ProfileFormData | null = null;
   
   try {
-    const session = await getServerSession(authOptions);
+    const token = request.cookies.get('auth_token')?.value;
     const body = await request.json();
     const parsed = body as {
       user_id?: string;
@@ -49,9 +59,16 @@ export async function POST(request: NextRequest) {
       profile_data: ProfileFormData;
     };
     
-    // For authenticated users, use session user ID
+    // For authenticated users, use JWT user ID
     // For demo mode, allow specified user_id
-    user_id = session?.user?.id || parsed.user_id || '';
+    if (token) {
+      const user = await verifyJWT(token);
+      if (user) {
+        user_id = user.uid;
+      }
+    } else {
+      user_id = parsed.user_id || '';
+    }
     profile_data = parsed.profile_data;
     const name = parsed.name || 'Default Profile';
 
@@ -63,7 +80,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check profile limit (max 5 profiles per user) - only for authenticated users
-    if (session?.user?.id) {
+    if (token) {
       const existingProfiles = await prisma.profile.count({
         where: { user_id: user_id }
       });

@@ -14,6 +14,8 @@ export async function middleware(request: NextRequest) {
     '/api/auth/signup',
     '/api/auth/me',
     '/api/auth/signout',
+    '/api/generate', // Allow generate API for demo
+    '/api/profiles', // Allow profiles API for demo
   ];
 
   // Check if it's a public route
@@ -22,7 +24,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Get token from cookie
-  const token = request.cookies.get('auth-token')?.value;
+  const token = request.cookies.get('auth_token')?.value;
 
   if (!token) {
     // Redirect to sign-in page if no token
