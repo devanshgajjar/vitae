@@ -7,7 +7,7 @@ let mammoth: any = null;
 async function loadParsers() {
   if (typeof window === 'undefined') {
     try {
-      pdfParse = (await import('pdf-parse')).default;
+      pdfParse = (await import('pdf-parse' as any)).default;
       // Note: mammoth is for converting DOCX to HTML, not extracting text
       // For DOCX text extraction, we'll use a simpler approach
     } catch (error) {

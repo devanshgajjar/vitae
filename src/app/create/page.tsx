@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,7 +13,8 @@ import {
   Download, 
   Clock,
   Sparkles,
-  Target
+  Target,
+  Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { FitAnalysis } from '@/types';
@@ -42,7 +43,7 @@ interface GeneratedDocuments {
   }>;
 }
 
-export default function CreatePage() {
+function CreatePageContent() {
   const searchParams = useSearchParams();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<string>('');
@@ -574,5 +575,15 @@ export default function CreatePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CreatePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+    </div>}>
+      <CreatePageContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,7 +19,7 @@ import {
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ImportPage() {
+function ImportPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -489,5 +489,15 @@ export default function ImportPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ImportPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+    </div>}>
+      <ImportPageContent />
+    </Suspense>
   );
 }
