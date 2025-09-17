@@ -14,10 +14,10 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-gray-900">Vitae AI</h1>
             </div>
             <div className="flex space-x-4">
-              <Link href="/auth/signin">
+              <Link href="/auth/sign-in">
                 <Button variant="outline">Sign In</Button>
               </Link>
-              <Link href="/auth/signin">
+              <Link href="/auth/sign-in">
                 <Button>Get Started</Button>
               </Link>
             </div>
