@@ -77,7 +77,7 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
       if (!activeProfile && profilesWithCompletion.length > 0) {
         const savedActiveId = localStorage.getItem('activeProfileId');
         const savedProfile = savedActiveId ? 
-          profilesWithCompletion.find(p => p.id === savedActiveId) : null;
+          profilesWithCompletion.find((p: any) => p.id === savedActiveId) : null;
         
         setActiveProfile(savedProfile || profilesWithCompletion[0]);
       }

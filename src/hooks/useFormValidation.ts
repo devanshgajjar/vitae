@@ -57,10 +57,10 @@ export function useFormValidation(formData: ProfileFormData): FormValidationResu
   return useMemo(() => {
     // Header validation
     const headerValidation = {
-      name: validateName(formData.header.name),
-      email: validateEmail(formData.header.email),
-      phone: validatePhone(formData.header.phone),
-      location: validateTextContent(formData.header.location, {
+      name: validateName(formData.header.name || ''),
+      email: validateEmail(formData.header.email || ''),
+      phone: validatePhone(formData.header.phone || ''),
+      location: validateTextContent(formData.header.location || '', {
         field: 'location',
         minLength: 5,
         maxLength: 100
@@ -213,7 +213,7 @@ function calculateCompleteness(formData: ProfileFormData): ValidationResult {
     { value: formData.header.location, name: 'Location' }
   ];
 
-  const missingEssential = essentialFields.filter(field => !field.value.trim());
+  const missingEssential = essentialFields.filter(field => !field.value?.trim());
   if (missingEssential.length > 0) {
     warnings.push({
       field: 'profile',
@@ -349,7 +349,7 @@ function calculateCompletionPercentage(formData: ProfileFormData): number {
     formData.header.location
   ];
   total += 40;
-  completed += (headerFields.filter(f => f.trim()).length / headerFields.length) * 40;
+  completed += (headerFields.filter(f => f?.trim()).length / headerFields.length) * 40;
 
   // Experience (weight: 30%)
   total += 30;

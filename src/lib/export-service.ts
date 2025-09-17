@@ -320,7 +320,7 @@ export async function exportToDOCX(markdownContent: string, filename: string): P
     });
 
     const buffer = await Packer.toBuffer(doc);
-    return new Blob([buffer], {
+    return new Blob([new Uint8Array(buffer)], {
       type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     });
   } catch (error) {
