@@ -11,6 +11,10 @@ export async function POST(request: NextRequest) {
   console.log('📝 Generate API called');
   
   try {
+    // Get user ID from middleware headers (for authenticated requests)
+    const authenticatedUserId = request.headers.get('x-user-id');
+    console.log('🔐 Authenticated user ID:', authenticatedUserId);
+    
     const body: GenerateRequest = await request.json();
     console.log('📋 Request body:', { 
       profile_id: body.profile_id, 
@@ -30,7 +34,7 @@ export async function POST(request: NextRequest) {
     let typedProfile: Profile;
     
     if (body.profile_id === 'demo-profile-123') {
-      // Use demo profile data
+      // Use demo profile data for demo mode
       const demoData = getDemoProfileData();
       typedProfile = {
         id: demoData.id,
@@ -45,32 +49,63 @@ export async function POST(request: NextRequest) {
         updated_at: new Date()
       };
     } else {
-      // Fetch profile from database
-      const profile = await prisma.profile.findUnique({
-        where: { id: body.profile_id },
-        include: { user: true }
-      });
+      // For authenticated requests, validate profile ownership
+      if (authenticatedUserId) {
+        const profile = await prisma.profile.findFirst({
+          where: { 
+            id: body.profile_id,
+            user_id: authenticatedUserId  // Ensure profile belongs to authenticated user
+          },
+          include: { user: true }
+        });
 
-      if (!profile) {
-        return NextResponse.json(
-          { error: 'Profile not found' },
-          { status: 404 }
-        );
+        if (!profile) {
+          return NextResponse.json(
+            { error: 'Profile not found or access denied' },
+            { status: 404 }
+          );
+        }
+
+        typedProfile = {
+          id: profile.id,
+          user_id: profile.user_id,
+          header: profile.header as any,
+          experience: profile.experience as any,
+          education: profile.education as any,
+          skills: profile.skills as any,
+          projects: profile.projects as any,
+          evidence: profile.evidence as any,
+          created_at: profile.created_at,
+          updated_at: profile.updated_at
+        };
+      } else {
+        // Fallback for non-authenticated requests (demo mode)
+        const profile = await prisma.profile.findUnique({
+          where: { id: body.profile_id },
+          include: { user: true }
+        });
+
+        if (!profile) {
+          return NextResponse.json(
+            { error: 'Profile not found' },
+            { status: 404 }
+          );
+        }
+
+        // Convert Prisma JSON fields to typed objects
+        typedProfile = {
+          id: profile.id,
+          user_id: profile.user_id,
+          header: profile.header as any,
+          experience: profile.experience as any,
+          education: profile.education as any,
+          skills: profile.skills as any,
+          projects: profile.projects as any,
+          evidence: profile.evidence as any,
+          created_at: profile.created_at,
+          updated_at: profile.updated_at
+        };
       }
-
-      // Convert Prisma JSON fields to typed objects
-      typedProfile = {
-        id: profile.id,
-        user_id: profile.user_id,
-        header: profile.header as any,
-        experience: profile.experience as any,
-        education: profile.education as any,
-        skills: profile.skills as any,
-        projects: profile.projects as any,
-        evidence: profile.evidence as any,
-        created_at: profile.created_at,
-        updated_at: profile.updated_at
-      };
     }
 
     // Check if OpenAI is available
@@ -170,10 +205,15 @@ export async function POST(request: NextRequest) {
     // Generate JD hash for caching
     const jdHash = hashJobDescription(body.job_description.raw_text);
 
-    // Save resume document
-    const resumeDoc = await prisma.document.create({
+    let resumeDoc: any = null;
+    let coverLetterDoc: any = null;
+
+    // Only save documents for real users (not demo)
+    if (body.profile_id !== 'demo-profile-123' && (authenticatedUserId || typedProfile.user_id !== 'demo-user-123')) {
+      // Save resume document
+      resumeDoc = await prisma.document.create({
       data: {
-        user_id: typedProfile.user_id,
+        user_id: authenticatedUserId || typedProfile.user_id,
         profile_id: typedProfile.id,
         kind: 'resume' as DocumentKind,
         jd_hash: jdHash,
@@ -184,19 +224,20 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Save cover letter document
-    const coverLetterDoc = await prisma.document.create({
-      data: {
-        user_id: typedProfile.user_id,
-        profile_id: typedProfile.id,
-        kind: 'cover_letter' as DocumentKind,
-        jd_hash: jdHash,
-        content_md: coverLetterContent,
-        trace_mapping: coverLetterResult.traceMapping as any,
-        options: body.options as any,
-        fit_analysis: fitAnalysis as any
-      }
-    });
+      // Save cover letter document
+      coverLetterDoc = await prisma.document.create({
+        data: {
+          user_id: authenticatedUserId || typedProfile.user_id,
+          profile_id: typedProfile.id,
+          kind: 'cover_letter' as DocumentKind,
+          jd_hash: jdHash,
+          content_md: coverLetterContent,
+          trace_mapping: coverLetterResult.traceMapping as any,
+          options: body.options as any,
+          fit_analysis: fitAnalysis as any
+        }
+      });
+    }
 
     // Combine trace mappings
     const allTraceMappings = [
@@ -209,7 +250,7 @@ export async function POST(request: NextRequest) {
       cover_letter_md: coverLetterContent,
       trace_mapping: allTraceMappings,
       fit_analysis: fitAnalysis,
-      document_id: resumeDoc.id // Return resume doc ID as primary
+      document_id: resumeDoc?.id || 'demo-doc-id' // Return resume doc ID or demo ID
     };
 
     console.log('✅ Successfully generated documents');

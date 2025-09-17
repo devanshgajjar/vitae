@@ -14,8 +14,6 @@ export async function middleware(request: NextRequest) {
     '/api/auth/signup',
     '/api/auth/me',
     '/api/auth/signout',
-    '/api/generate', // Allow generate API for demo
-    '/api/profiles', // Allow profiles API for demo
   ];
 
   // Check if it's a public route
