@@ -113,7 +113,6 @@ providers.push(
 );
 
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
   providers,
   callbacks: {
     session: async ({ session, token }: { session: any; token: any }) => {
@@ -125,6 +124,8 @@ export const authOptions = {
     jwt: async ({ user, token }: { user: any; token: any }) => {
       if (user) {
         token.uid = user.id;
+        token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
