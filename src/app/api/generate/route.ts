@@ -4,6 +4,7 @@ import { generateResume, generateCoverLetter, optimizeForATS, formatForLength } 
 import { analyzeFit } from '@/lib/fit-analysis';
 import { validateContent } from '@/lib/guardrails';
 import { hashJobDescription } from '@/lib/jd-parser';
+import { getDemoProfileData } from '@/lib/demo-profile';
 import { GenerateRequest, GenerateResponse, Profile, DocumentKind } from '@/types';
 
 export async function POST(request: NextRequest) {
@@ -18,32 +19,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch profile
-    const profile = await prisma.profile.findUnique({
-      where: { id: body.profile_id },
-      include: { user: true }
-    });
+    // Handle demo profile or fetch from database
+    let typedProfile: Profile;
+    
+    if (body.profile_id === 'demo-profile-123') {
+      // Use demo profile data
+      const demoData = getDemoProfileData();
+      typedProfile = {
+        id: demoData.id,
+        user_id: 'demo-user-123',
+        header: demoData.header,
+        experience: demoData.experience,
+        education: demoData.education,
+        skills: demoData.skills,
+        projects: demoData.projects,
+        evidence: demoData.evidence,
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+    } else {
+      // Fetch profile from database
+      const profile = await prisma.profile.findUnique({
+        where: { id: body.profile_id },
+        include: { user: true }
+      });
 
-    if (!profile) {
-      return NextResponse.json(
-        { error: 'Profile not found' },
-        { status: 404 }
-      );
+      if (!profile) {
+        return NextResponse.json(
+          { error: 'Profile not found' },
+          { status: 404 }
+        );
+      }
+
+      // Convert Prisma JSON fields to typed objects
+      typedProfile = {
+        id: profile.id,
+        user_id: profile.user_id,
+        header: profile.header as any,
+        experience: profile.experience as any,
+        education: profile.education as any,
+        skills: profile.skills as any,
+        projects: profile.projects as any,
+        evidence: profile.evidence as any,
+        created_at: profile.created_at,
+        updated_at: profile.updated_at
+      };
     }
-
-    // Convert Prisma JSON fields to typed objects
-    const typedProfile: Profile = {
-      id: profile.id,
-      user_id: profile.user_id,
-      header: profile.header as any,
-      experience: profile.experience as any,
-      education: profile.education as any,
-      skills: profile.skills as any,
-      projects: profile.projects as any,
-      evidence: profile.evidence as any,
-      created_at: profile.created_at,
-      updated_at: profile.updated_at
-    };
 
     // Generate fit analysis
     const fitAnalysis = await analyzeFit(typedProfile, body.job_description);
@@ -132,8 +153,8 @@ export async function POST(request: NextRequest) {
     // Save resume document
     const resumeDoc = await prisma.document.create({
       data: {
-        user_id: profile.user_id,
-        profile_id: profile.id,
+        user_id: typedProfile.user_id,
+        profile_id: typedProfile.id,
         kind: 'resume' as DocumentKind,
         jd_hash: jdHash,
         content_md: resumeContent,
@@ -146,8 +167,8 @@ export async function POST(request: NextRequest) {
     // Save cover letter document
     const coverLetterDoc = await prisma.document.create({
       data: {
-        user_id: profile.user_id,
-        profile_id: profile.id,
+        user_id: typedProfile.user_id,
+        profile_id: typedProfile.id,
         kind: 'cover_letter' as DocumentKind,
         jd_hash: jdHash,
         content_md: coverLetterContent,

@@ -55,6 +55,7 @@ function CreatePageContent() {
   const [activePreview, setActivePreview] = useState<'resume' | 'cover_letter'>('resume');
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
   const [, setSelectedProfileData] = useState<Profile | null>(null);
+  const [isDemoProfileLoaded, setIsDemoProfileLoaded] = useState(false);
 
   // TODO: Replace with actual user ID from authentication
   const userId = 'demo-user-123';
@@ -128,6 +129,90 @@ function CreatePageContent() {
     } finally {
       setIsLoadingProfiles(false);
     }
+  };
+
+  const loadDemoProfile = () => {
+    // Create a demo profile that matches the full data structure for completion calculation
+    const demoProfile: Profile & { profile_data?: any } = {
+      id: 'demo-profile-123',
+      name: 'Alex Chen - Software Engineer',
+      header: {
+        name: 'Alex Chen',
+        email: 'alex.chen@email.com',
+        phone: '+1 (555) 123-4567',
+        location: 'San Francisco, CA'
+      },
+      created_at: new Date().toISOString(),
+      profile_data: {
+        header: {
+          fullName: 'Alex Chen',
+          email: 'alex.chen@email.com',
+          phone: '+1 (555) 123-4567',
+          location: 'San Francisco, CA'
+        },
+        experience: [
+          { id: '1', company: 'TechStart Inc.', position: 'Senior Full Stack Engineer' },
+          { id: '2', company: 'Digital Solutions Corp', position: 'Full Stack Developer' },
+          { id: '3', company: 'InnovateLab', position: 'Software Developer' }
+        ],
+        education: [
+          { id: '1', institution: 'UC Berkeley', degree: 'BS Computer Science' }
+        ],
+        skills: {
+          technical: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python'],
+          soft: ['Team Leadership', 'Problem Solving', 'Communication']
+        },
+        projects: [
+          { id: '1', name: 'E-commerce Platform' },
+          { id: '2', name: 'Real-time Chat Application' }
+        ]
+      }
+    };
+
+    // Add demo profile to the list if not already there
+    if (!profiles.find(p => p.id === 'demo-profile-123')) {
+      setProfiles(prev => [demoProfile, ...prev]);
+    }
+    
+    // Select the demo profile
+    setSelectedProfile('demo-profile-123');
+    setSelectedProfileData(demoProfile);
+    setIsDemoProfileLoaded(true);
+
+    // Also load a sample job description
+    setJobDescription(`Senior Full Stack Engineer - TechCorp Inc.
+
+About the Role:
+We are seeking a talented Senior Full Stack Engineer to join our growing engineering team. You will be responsible for building and maintaining our web applications using modern technologies.
+
+Key Responsibilities:
+• Design and develop scalable web applications using React, Node.js, and TypeScript
+• Collaborate with cross-functional teams to deliver high-quality software solutions
+• Write clean, maintainable, and well-tested code
+• Participate in code reviews and mentor junior developers
+• Optimize application performance and user experience
+
+Required Qualifications:
+• 5+ years of experience in full-stack web development
+• Strong proficiency in JavaScript/TypeScript, React, and Node.js
+• Experience with RESTful APIs and database design (PostgreSQL, MongoDB)
+• Familiarity with cloud platforms (AWS, Azure, or GCP)
+• Knowledge of CI/CD pipelines and DevOps practices
+• Bachelor's degree in Computer Science or related field
+
+Preferred Qualifications:
+• Experience with Next.js, Express.js, and GraphQL
+• Knowledge of containerization (Docker, Kubernetes)
+• Experience with Agile development methodologies
+• Previous startup or fast-paced environment experience
+
+What We Offer:
+• Competitive salary ($120,000 - $160,000)
+• Equity package
+• Health, dental, and vision insurance
+• Flexible work arrangements
+• Professional development budget
+• Modern tech stack and tools`);
   };
 
   const handleParseJD = async () => {
@@ -359,6 +444,24 @@ function CreatePageContent() {
                   })}
                 </select>
               )}
+
+              {/* Demo Profile Button */}
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <Button
+                  onClick={loadDemoProfile}
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 text-blue-700 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300"
+                >
+                  <Sparkles className="w-3 h-3 mr-2" />
+                  {isDemoProfileLoaded ? 'Demo Profile Loaded' : 'Try with Demo Profile'}
+                </Button>
+                {isDemoProfileLoaded && (
+                  <p className="text-xs text-green-600 mt-1 text-center">
+                    ✓ Demo profile and job description loaded!
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Job Description Input */}
