@@ -207,7 +207,7 @@ export interface ProfileFormData {
 // Import/export types
 export interface ImportSource {
   type: 'linkedin' | 'resume_pdf' | 'manual';
-  data: any; // Platform-specific data
+  data: Record<string, unknown>; // Platform-specific data
 }
 
 export interface ExportTheme {

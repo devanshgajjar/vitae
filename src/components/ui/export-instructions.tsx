@@ -10,12 +10,12 @@ export default function ExportInstructions() {
         <div className="text-sm">
           <h4 className="font-semibold text-blue-900 mb-1">PDF Export Instructions</h4>
           <p className="text-blue-800 mb-2 font-medium">
-            Click "PDF (Harvard)" to open a professionally formatted preview in Harvard CV style.
+            Click &quot;PDF (Harvard)&quot; to open a professionally formatted preview in Harvard CV style.
           </p>
           <ul className="list-disc list-inside text-blue-800 space-y-1">
             <li>A new window will open with your formatted resume</li>
-            <li>Use your browser's print function (Ctrl/Cmd + P) to save as PDF</li>
-            <li>Select "Save as PDF" in the print destination</li>
+            <li>Use your browser&apos;s print function (Ctrl/Cmd + P) to save as PDF</li>
+            <li>Select &quot;Save as PDF&quot; in the print destination</li>
             <li>The format includes proper Times New Roman font, margins, and spacing</li>
           </ul>
         </div>

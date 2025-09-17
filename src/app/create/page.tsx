@@ -3,32 +3,43 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import ExportInstructions from '@/components/ui/export-instructions';
-import CompletionBadge from '@/components/ui/completion-badge';
 import MarkdownPreview from '@/components/ui/markdown-preview';
 import { 
   FileText, 
   ArrowLeft, 
-  Search, 
   Download, 
-  Eye, 
   Clock,
-  CheckCircle,
-  ToggleLeft,
-  ToggleRight,
   Sparkles,
   Target
 } from 'lucide-react';
 import Link from 'next/link';
+import { FitAnalysis } from '@/types';
 
 interface Profile {
   id: string;
   name: string;
-  header: any;
+  header: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    location?: string;
+  };
   created_at: string;
+}
+
+interface GeneratedDocuments {
+  document_id: string;
+  resume_md: string;
+  cover_letter_md: string;
+  trace_mapping: Array<{
+    output_bullet: string;
+    source_id: string;
+    source_type: string;
+    confidence: string;
+  }>;
 }
 
 export default function CreatePage() {
@@ -38,8 +49,8 @@ export default function CreatePage() {
   const [jobDescription, setJobDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
-  const [fitAnalysis, setFitAnalysis] = useState<any>(null);
-  const [generatedDocuments, setGeneratedDocuments] = useState<any>(null);
+  const [fitAnalysis, setFitAnalysis] = useState<FitAnalysis | null>(null);
+  const [generatedDocuments, setGeneratedDocuments] = useState<GeneratedDocuments | null>(null);
   const [activePreview, setActivePreview] = useState<'resume' | 'cover_letter'>('resume');
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
   const [selectedProfileData, setSelectedProfileData] = useState<Profile | null>(null);
@@ -77,7 +88,7 @@ export default function CreatePage() {
     });
     
     // Check if we have profile data in profile_data field (from database)
-    const profileData = (profile as any).profile_data || profile;
+    const profileData = (profile as Profile & { profile_data?: Record<string, unknown> }).profile_data || profile;
     
     // Experience (30%)
     total += 30;
@@ -150,7 +161,7 @@ export default function CreatePage() {
     }
   };
 
-  const runFitAnalysis = async (parsedJD: any) => {
+  const runFitAnalysis = async (parsedJD: Record<string, unknown>) => {
     if (!selectedProfile) {
       alert('Please select a profile first');
       return;
@@ -432,7 +443,7 @@ export default function CreatePage() {
                   <div>
                     <h4 className="font-medium text-sm mb-2 text-gray-700">Skill Matches</h4>
                     <div className="space-y-1">
-                      {fitAnalysis.skill_matches.map((match: any, index: number) => (
+                      {fitAnalysis.skill_matches.map((match, index: number) => (
                         <div key={index} className="flex items-center justify-between text-sm">
                           <span className="text-gray-900">{match.skill}</span>
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -451,7 +462,7 @@ export default function CreatePage() {
                     <div>
                       <h4 className="font-medium text-sm mb-2 text-orange-600">Gaps to Address</h4>
                       <div className="space-y-1">
-                        {fitAnalysis.gaps.map((gap: any, index: number) => (
+                        {fitAnalysis.gaps.map((gap, index: number) => (
                           <div key={index} className="text-sm">
                             <div className="flex items-center justify-between">
                               <span className="text-red-700 font-medium">• {gap.skill}</span>
@@ -555,7 +566,7 @@ export default function CreatePage() {
                 <div className="text-center py-12 text-gray-500">
                   <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No documents generated yet</h3>
-                  <p className="text-gray-500">Select a profile, paste a job description, and click "Generate" to create your tailored resume and cover letter.</p>
+                  <p className="text-gray-500">Select a profile, paste a job description, and click &quot;Generate&quot; to create your tailored resume and cover letter.</p>
                 </div>
               </div>
             )}

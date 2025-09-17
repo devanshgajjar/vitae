@@ -14,8 +14,7 @@ import {
   AlertCircle, 
   Loader2,
   ArrowLeft,
-  User,
-  Edit3
+  User
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -24,15 +23,6 @@ export default function ImportPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // For MVP, redirect to manual entry if imports are disabled
-  React.useEffect(() => {
-    if (!isFeatureEnabled('enableLinkedInImport') && !isFeatureEnabled('enableResumeImport')) {
-      router.push('/create');
-      return;
-    }
-  }, [router]);
-  
   const [importMethod, setImportMethod] = useState<'linkedin' | 'resume' | 'manual' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,10 +30,13 @@ export default function ImportPage() {
   const [file, setFile] = useState<File | null>(null);
   const [manualText, setManualText] = useState('');
 
-  // Don't render if imports are disabled (will redirect)
-  if (!isFeatureEnabled('enableLinkedInImport') && !isFeatureEnabled('enableResumeImport')) {
-    return null;
-  }
+  // For MVP, redirect to manual entry if imports are disabled
+  React.useEffect(() => {
+    if (!isFeatureEnabled('enableLinkedInImport') && !isFeatureEnabled('enableResumeImport')) {
+      router.push('/create');
+      return;
+    }
+  }, [router]);
 
   // Handle URL parameters for OAuth callbacks
   React.useEffect(() => {
@@ -192,6 +185,11 @@ export default function ImportPage() {
     }
   };
 
+  // Don't render if imports are disabled (will redirect)
+  if (!isFeatureEnabled('enableLinkedInImport') && !isFeatureEnabled('enableResumeImport')) {
+    return null;
+  }
+
   if (success) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -266,7 +264,7 @@ export default function ImportPage() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Upload Resume</h3>
                   <p className="text-gray-600 mb-6">
-                    Upload your existing resume in PDF, DOCX, or TXT format and we'll extract the information.
+                    Upload your existing resume in PDF, DOCX, or TXT format and we&apos;ll extract the information.
                   </p>
                   <Button 
                     onClick={() => setImportMethod('resume')}
@@ -319,12 +317,12 @@ export default function ImportPage() {
                   <Linkedin className="w-16 h-16 text-blue-600 mx-auto mb-4" />
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Connect LinkedIn Account</h2>
                   <p className="text-gray-600 mb-8">
-                    You'll be redirected to LinkedIn to authorize access to your profile information. 
-                    We'll only import basic profile data, work experience, and education.
+                    You&apos;ll be redirected to LinkedIn to authorize access to your profile information. 
+                    We&apos;ll only import basic profile data, work experience, and education.
                   </p>
                   
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h4 className="font-semibold text-blue-900 mb-2">What we'll import:</h4>
+                    <h4 className="font-semibold text-blue-900 mb-2">What we&apos;ll import:</h4>
                     <ul className="text-sm text-blue-800 text-left">
                       <li>• Basic profile information (name, email, location)</li>
                       <li>• Work experience and job titles</li>
@@ -360,7 +358,7 @@ export default function ImportPage() {
                   <Upload className="w-16 h-16 text-green-600 mx-auto mb-4" />
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Upload Your Resume</h2>
                   <p className="text-gray-600">
-                    Upload your resume file and we'll extract the information automatically.
+                    Upload your resume file and we&apos;ll extract the information automatically.
                   </p>
                 </div>
 
@@ -382,7 +380,7 @@ export default function ImportPage() {
                       <p className="font-medium text-blue-900 mb-1">💡 Best results:</p>
                       <ul className="text-blue-800 space-y-1">
                         <li>• <strong>TXT files</strong> - Most reliable parsing</li>
-                        <li>• <strong>Copy-paste method</strong> - Use "Paste Resume Text" below for best accuracy</li>
+                        <li>• <strong>Copy-paste method</strong> - Use &quot;Paste Resume Text&quot; below for best accuracy</li>
                         <li>• If file upload fails, try the manual text import instead</li>
                       </ul>
                     </div>

@@ -200,7 +200,7 @@ export default function SkillsInput({
                 focusedIndex === suggestions.length ? `bg-${skillColor}-50 text-${skillColor}-700` : 'text-gray-600'
               }`}
             >
-              <span className="font-medium">Add "{inputValue}"</span>
+              <span className="font-medium">Add &quot;{inputValue}&quot;</span>
             </button>
           )}
         </div>
