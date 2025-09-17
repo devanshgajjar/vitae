@@ -11,8 +11,24 @@ export async function POST(request: NextRequest) {
   console.log('📝 Generate API called');
   
   try {
-    // Get user ID from middleware headers (for authenticated requests)
-    const authenticatedUserId = request.headers.get('x-user-id');
+    // Get user ID from middleware headers or cookie (for authenticated requests)
+    let authenticatedUserId = request.headers.get('x-user-id');
+    
+    // If no user ID from middleware, try to get from cookie directly
+    if (!authenticatedUserId) {
+      const token = request.cookies.get('auth_token')?.value;
+      if (token) {
+        try {
+          const { verifyJWT } = await import('@/lib/auth');
+          const user = await verifyJWT(token);
+          authenticatedUserId = user?.id || null;
+        } catch (error) {
+          console.log('Token verification failed:', error);
+          authenticatedUserId = null;
+        }
+      }
+    }
+    
     console.log('🔐 Authenticated user ID:', authenticatedUserId);
     
     const body: GenerateRequest = await request.json();
