@@ -41,8 +41,10 @@ export interface FormValidationResults {
   projects: Array<{
     name: ValidationResult;
     role: ValidationResult;
-    description: ValidationResult;
-    link: ValidationResult;
+    scope: ValidationResult;
+    top_achievements: ValidationResult;
+    tools: ValidationResult;
+    url: ValidationResult;
   }>;
   overall: {
     completeness: ValidationResult;
@@ -165,13 +167,23 @@ export function useFormValidation(formData: ProfileFormData): FormValidationResu
         minLength: 5,
         maxLength: 60
       }),
-      description: validateTextContent(project.description, {
-        field: 'project description',
+      scope: validateTextContent(project.scope, {
+        field: 'project scope',
         minLength: 50,
         maxLength: 300,
         recommendedLength: { min: 80, max: 200 }
       }),
-      link: project.link ? validateUrl(project.link) : {
+      top_achievements: {
+        isValid: project.top_achievements && project.top_achievements.length >= 2,
+        warnings: project.top_achievements && project.top_achievements.length < 3 ? ['Consider adding more achievements to strengthen your project'] : [],
+        suggestions: project.top_achievements && project.top_achievements.length === 0 ? ['Add at least 2 key achievements for this project'] : []
+      },
+      tools: {
+        isValid: project.tools && project.tools.length >= 3,
+        warnings: project.tools && project.tools.length < 5 ? ['Consider adding more technologies to show your tech stack'] : [],
+        suggestions: project.tools && project.tools.length === 0 ? ['Add at least 3 technologies used in this project'] : []
+      },
+      url: project.url ? validateUrl(project.url) : {
         isValid: true,
         warnings: [],
         suggestions: []
