@@ -1,21 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
 import { ProfileFormData } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
-    if (!userId) {
+    // For authenticated users, use session user ID
+    // For demo mode, allow specified user_id
+    const targetUserId = session?.user?.id || userId;
+
+    if (!targetUserId) {
       return NextResponse.json(
-        { error: 'user_id is required' },
-        { status: 400 }
+        { error: 'Authentication required or user_id needed for demo' },
+        { status: 401 }
       );
     }
 
     const profiles = await prisma.profile.findMany({
-      where: { user_id: userId },
+      where: { user_id: targetUserId },
       orderBy: { created_at: 'desc' }
     });
 
@@ -34,34 +41,39 @@ export async function POST(request: NextRequest) {
   let profile_data: ProfileFormData | null = null;
   
   try {
+    const session = await getServerSession(authOptions);
     const body = await request.json();
     const parsed = body as {
-      user_id: string;
+      user_id?: string;
       name?: string;
       profile_data: ProfileFormData;
     };
     
-    user_id = parsed.user_id;
+    // For authenticated users, use session user ID
+    // For demo mode, allow specified user_id
+    user_id = session?.user?.id || parsed.user_id || '';
     profile_data = parsed.profile_data;
     const name = parsed.name || 'Default Profile';
 
     if (!user_id || !profile_data) {
       return NextResponse.json(
-        { error: 'user_id and profile_data are required' },
-        { status: 400 }
+        { error: 'Authentication required or user_id needed for demo' },
+        { status: 401 }
       );
     }
 
-    // Check profile limit (max 5 profiles per user)
-    const existingProfiles = await prisma.profile.count({
-      where: { user_id: user_id }
-    });
+    // Check profile limit (max 5 profiles per user) - only for authenticated users
+    if (session?.user?.id) {
+      const existingProfiles = await prisma.profile.count({
+        where: { user_id: user_id }
+      });
 
-    if (existingProfiles >= 5) {
-      return NextResponse.json(
-        { error: 'Maximum of 5 profiles allowed. Please delete an existing profile to add a new one.' },
-        { status: 400 }
-      );
+      if (existingProfiles >= 5) {
+        return NextResponse.json(
+          { error: 'Maximum of 5 profiles allowed. Please delete an existing profile to add a new one.' },
+          { status: 400 }
+        );
+      }
     }
 
     // Validate required fields

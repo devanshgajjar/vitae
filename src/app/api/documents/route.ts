@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
-    if (!userId) {
+    // For authenticated users, use session user ID
+    // For demo mode, allow specified user_id
+    const targetUserId = session?.user?.id || userId;
+
+    if (!targetUserId) {
       return NextResponse.json(
-        { error: 'user_id is required' },
-        { status: 400 }
+        { error: 'Authentication required or user_id needed for demo' },
+        { status: 401 }
       );
     }
 
@@ -17,7 +24,7 @@ export async function GET(request: NextRequest) {
     const documents = await prisma.document.findMany({
       where: {
         profile: {
-          user_id: userId
+          user_id: targetUserId
         }
       },
       include: {

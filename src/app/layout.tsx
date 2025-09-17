@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ProfileProvider } from "@/contexts/ProfileContext";
-// SessionProvider disabled for demo mode
+import SessionProvider from "@/components/providers/SessionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{colorScheme: 'light'}}
       >
-        <ProfileProvider>
-          {children}
-        </ProfileProvider>
+        <SessionProvider>
+          <ProfileProvider>
+            {children}
+          </ProfileProvider>
+        </SessionProvider>
       </body>
     </html>
   );
