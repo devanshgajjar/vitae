@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function SignInPage() {
-  const { login, signup, isLoading } = useAuth();
+  const { signIn, signUp, loading } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,10 +25,10 @@ export default function SignInPage() {
 
     let success = false;
     if (isSignUp) {
-      success = await signup(email, password, name);
+      success = await signUp(email, password, name);
       if (!success) setError('Signup failed. User might already exist or invalid details.');
     } else {
-      success = await login(email, password);
+      success = await signIn(email, password);
       if (!success) setError('Login failed. Invalid email or password.');
     }
     setIsSubmitting(false);
@@ -118,10 +118,10 @@ export default function SignInPage() {
 
             <Button
               type="submit"
-              disabled={isSubmitting || isLoading || !email || !password || (isSignUp && !name)}
+              disabled={isSubmitting || loading || !email || !password || (isSignUp && !name)}
               className="w-full"
             >
-              {isSubmitting || isLoading ? (
+              {isSubmitting || loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Please wait...
