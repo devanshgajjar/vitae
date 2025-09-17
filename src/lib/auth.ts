@@ -113,7 +113,7 @@ export function getTokenFromRequest(request: Request): string | null {
   // Try to get from cookie
   const cookieHeader = request.headers.get('cookie');
   if (cookieHeader) {
-    const match = cookieHeader.match(/auth-token=([^;]+)/);
+    const match = cookieHeader.match(/auth_token=([^;]+)/);
     return match ? match[1] : null;
   }
   
