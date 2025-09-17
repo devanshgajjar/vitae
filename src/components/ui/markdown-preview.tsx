@@ -11,7 +11,7 @@ export default function MarkdownPreview({ content, className = '' }: MarkdownPre
   // Simple markdown renderer for resume content
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
-    const result: JSX.Element[] = [];
+    const result: React.ReactElement[] = [];
     let currentSection = '';
 
     lines.forEach((line, index) => {

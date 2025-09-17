@@ -65,20 +65,20 @@ export async function PUT(
     const processedData = {
       header: profile_data.header,
       experience: profile_data.experience.map((exp, index) => ({
-        id: exp.id || `exp_${Date.now()}_${index}`,
+        id: (exp as any).id || `exp_${Date.now()}_${index}`,
         ...exp
       })),
       education: profile_data.education.map((edu, index) => ({
-        id: edu.id || `edu_${Date.now()}_${index}`,
+        id: (edu as any).id || `edu_${Date.now()}_${index}`,
         ...edu
       })),
       skills: profile_data.skills,
       projects: profile_data.projects.map((proj, index) => ({
-        id: proj.id || `proj_${Date.now()}_${index}`,
+        id: (proj as any).id || `proj_${Date.now()}_${index}`,
         ...proj
       })),
       evidence: profile_data.evidence.map((ev, index) => ({
-        id: ev.id || `ev_${Date.now()}_${index}`,
+        id: (ev as any).id || `ev_${Date.now()}_${index}`,
         ...ev
       }))
     };

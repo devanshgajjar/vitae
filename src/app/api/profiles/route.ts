@@ -30,13 +30,20 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  let user_id = '';
+  let profile_data: ProfileFormData | null = null;
+  
   try {
     const body = await request.json();
-    const { user_id, name = 'Default Profile', profile_data }: {
+    const parsed = body as {
       user_id: string;
       name?: string;
       profile_data: ProfileFormData;
-    } = body;
+    };
+    
+    user_id = parsed.user_id;
+    profile_data = parsed.profile_data;
+    const name = parsed.name || 'Default Profile';
 
     if (!user_id || !profile_data) {
       return NextResponse.json(
@@ -103,12 +110,12 @@ export async function POST(request: NextRequest) {
       data: {
         user_id,
         name,
-        header: processedData.header,
-        experience: processedData.experience,
-        education: processedData.education,
-        skills: processedData.skills,
-        projects: processedData.projects,
-        evidence: processedData.evidence
+        header: processedData.header as any,
+        experience: processedData.experience as any,
+        education: processedData.education as any,
+        skills: processedData.skills as any,
+        projects: processedData.projects as any,
+        evidence: processedData.evidence as any
       }
     });
 
@@ -116,14 +123,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating profile:', error);
     console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace',
       user_id,
       profile_data_keys: Object.keys(profile_data || {}),
       header_keys: Object.keys(profile_data?.header || {})
     });
     return NextResponse.json(
-      { error: 'Failed to create profile', details: error.message },
+      { error: 'Failed to create profile', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

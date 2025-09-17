@@ -84,7 +84,7 @@ export default function CreatePage() {
     const headerFields = ['name', 'email', 'phone', 'location'];
     headerFields.forEach(field => {
       total += 10;
-      if (profile.header[field]) completed += 10;
+      if (profile.header[field as keyof typeof profile.header]) completed += 10;
     });
     
     // Check if we have profile data in profile_data field (from database)
@@ -92,20 +92,20 @@ export default function CreatePage() {
     
     // Experience (30%)
     total += 30;
-    if (profileData.experience && profileData.experience.length > 0) {
+    if ((profileData as any).experience && (profileData as any).experience.length > 0) {
       completed += 30;
     }
     
     // Skills (20%)
     total += 20;
-    if (profileData.skills && 
-        (profileData.skills.hard_skills?.length > 0 || profileData.skills.soft_skills?.length > 0)) {
+    if ((profileData as any).skills && 
+        ((profileData as any).skills.hard_skills?.length > 0 || (profileData as any).skills.soft_skills?.length > 0)) {
       completed += 20;
     }
     
     // Education (10%)
     total += 10;
-    if (profileData.education && profileData.education.length > 0) {
+    if ((profileData as any).education && (profileData as any).education.length > 0) {
       completed += 10;
     }
     
@@ -237,7 +237,7 @@ export default function CreatePage() {
       
     } catch (error) {
       console.error('Generation error:', error);
-      alert(`Failed to generate documents: ${error.message}`);
+      alert(`Failed to generate documents: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsGenerating(false);
     }
@@ -465,10 +465,10 @@ export default function CreatePage() {
                         {fitAnalysis.gaps.map((gap, index: number) => (
                           <div key={index} className="text-sm">
                             <div className="flex items-center justify-between">
-                              <span className="text-red-700 font-medium">• {gap.skill}</span>
-                              <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded font-medium">{gap.priority} priority</span>
+                              <span className="text-red-700 font-medium">• {(gap as any).skill || gap}</span>
+                              <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded font-medium">{(gap as any).priority || 'medium'} priority</span>
                             </div>
-                            <p className="text-xs text-gray-700 ml-2 mt-1">{gap.suggestion}</p>
+                            <p className="text-xs text-gray-700 ml-2 mt-1">{(gap as any).suggestion || ''}</p>
                           </div>
                         ))}
                       </div>
