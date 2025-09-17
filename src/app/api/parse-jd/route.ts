@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       await prisma.jobDescriptionCache.create({
         data: {
           jd_hash: jdHash,
-          parsed_data: parsedJD,
+          parsed_data: parsedJD as any,
           fit_analyses: {}
         }
       });

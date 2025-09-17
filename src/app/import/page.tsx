@@ -425,7 +425,7 @@ export default function ImportPage() {
                   <FileText className="w-16 h-16 text-purple-600 mx-auto mb-4" />
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Paste Resume Content</h2>
                   <p className="text-gray-600">
-                    Copy and paste your resume text below. We'll extract the key information automatically.
+                    Copy and paste your resume text below. We&apos;ll extract the key information automatically.
                   </p>
                 </div>
 

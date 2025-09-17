@@ -145,12 +145,12 @@ export async function POST(request: NextRequest) {
       data: {
         user_id,
         name: 'LinkedIn Import',
-        header: processedData.header,
-        experience: processedData.experience,
-        education: processedData.education,
-        skills: processedData.skills,
-        projects: processedData.projects,
-        evidence: processedData.evidence
+        header: processedData.header as any,
+        experience: processedData.experience as any,
+        education: processedData.education as any,
+        skills: processedData.skills as any,
+        projects: processedData.projects as any,
+        evidence: processedData.evidence as any
       }
     });
 

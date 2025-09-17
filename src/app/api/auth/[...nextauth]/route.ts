@@ -17,13 +17,13 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, token, user }) => {
+    session: async ({ session, user }: { session: any; user: any }) => {
       if (session?.user) {
         session.user.id = user.id;
       }
       return session;
     },
-    jwt: async ({ user, token }) => {
+    jwt: async ({ user, token }: { user: any; token: any }) => {
       if (user) {
         token.uid = user.id;
       }
@@ -31,7 +31,7 @@ export const authOptions = {
     },
   },
   session: {
-    strategy: 'database',
+    strategy: 'database' as const,
   },
   pages: {
     signIn: '/auth/signin',

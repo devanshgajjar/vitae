@@ -53,7 +53,7 @@ export default function CreatePage() {
   const [generatedDocuments, setGeneratedDocuments] = useState<GeneratedDocuments | null>(null);
   const [activePreview, setActivePreview] = useState<'resume' | 'cover_letter'>('resume');
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
-  const [selectedProfileData, setSelectedProfileData] = useState<Profile | null>(null);
+  const [, setSelectedProfileData] = useState<Profile | null>(null);
 
   // TODO: Replace with actual user ID from authentication
   const userId = 'demo-user-123';
