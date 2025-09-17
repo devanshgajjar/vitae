@@ -12,6 +12,8 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "db:deploy": "prisma db push",
+    "db:setup": "node setup-database.js",
+    "db:sqlite": "echo 'DATABASE_URL=file:./dev.db' && prisma generate && prisma db push",
     "postinstall": "prisma generate"
   },
   "dependencies": {
