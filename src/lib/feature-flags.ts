@@ -36,7 +36,7 @@ export function getEnabledFeatures(): Partial<typeof FEATURE_FLAGS> {
   return Object.entries(FEATURE_FLAGS)
     .filter(([_, enabled]) => enabled)
     .reduce((acc, [key, value]) => {
-      acc[key as FeatureFlag] = value;
+      (acc as any)[key as FeatureFlag] = value;
       return acc;
     }, {} as Partial<typeof FEATURE_FLAGS>);
 }
