@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { 
   FileText, 
@@ -13,10 +14,12 @@ import {
   ArrowRight,
   Target,
   TrendingUp,
-  CheckCircle
+  CheckCircle,
+  Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { useProfile } from '@/contexts/ProfileContext';
+import { useAuth } from '@/contexts/AuthContext';
 import ProfileSwitcher from '@/components/profile/ProfileSwitcher';
 import { getCompletionColor, getCompletionBgColor } from '@/lib/profile-completion';
 import MarkdownPreview from '@/components/ui/markdown-preview';
@@ -43,22 +46,35 @@ interface Profile {
 }
 
 export default function DashboardPage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const { activeProfile, profiles } = useProfile();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewingDocument, setViewingDocument] = useState<{id: string, content: string, kind: string} | null>(null);
 
-  // TODO: Replace with actual user ID from authentication
-  const userId = 'demo-user-123';
+  // Redirect to sign-in if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/sign-in');
+    }
+  }, [user, authLoading, router]);
+
+  // Get user ID from auth context
+  const userId = user?.id || 'demo-user-123';
 
   useEffect(() => {
-    loadDocuments();
-  }, [activeProfile]); // Reload documents when active profile changes
+    if (user) {
+      loadDocuments();
+    }
+  }, [activeProfile, user]); // Reload documents when active profile changes or user loads
 
   const loadDocuments = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/documents?user_id=${userId}`);
+      const response = await fetch(`/api/documents?user_id=${userId}`, {
+        credentials: 'include'
+      });
       if (response.ok) {
         const data = await response.json();
         let allDocuments = data.documents || [];
@@ -85,7 +101,9 @@ export default function DashboardPage() {
 
   const handleViewDocument = async (documentId: string) => {
     try {
-      const response = await fetch(`/api/documents/${documentId}`);
+      const response = await fetch(`/api/documents/${documentId}`, {
+        credentials: 'include'
+      });
       if (response.ok) {
         const document = await response.json();
         setViewingDocument({
@@ -109,6 +127,7 @@ export default function DashboardPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           document_id: documentId,
           format: format
@@ -183,6 +202,23 @@ export default function DashboardPage() {
     }
     return pairs;
   }, []);
+
+  // Show loading screen while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authenticated (redirect is in useEffect)
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900" style={{colorScheme: 'light'}}>
