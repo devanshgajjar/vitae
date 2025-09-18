@@ -19,6 +19,9 @@ export default function BlogPage({ params }: Params) {
     <article className="prose prose-zinc mx-auto p-6">
       <h1>{(md.frontmatter.title as string) || 'Blog'}</h1>
       <div dangerouslySetInnerHTML={{ __html: md.html }} />
+      {md.jsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: md.jsonLd }} />
+      )}
     </article>
   );
 }

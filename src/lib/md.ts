@@ -9,6 +9,7 @@ export interface LoadedMarkdown {
   frontmatter: Record<string, any>;
   html: string;
   raw: string;
+  jsonLd?: string;
 }
 
 export function getContentDir(subdir: 'compare' | 'migrate' | 'blog' | 'agents'): string {
@@ -24,13 +25,24 @@ export function getAllSlugs(subdir: 'compare' | 'migrate' | 'blog'): string[] {
     .map((f) => f.replace(/\.md$/, ''));
 }
 
+function extractJsonLd(markdown: string): { cleaned: string; jsonLd?: string } {
+  const fence = /```json[\s\S]*?```/m;
+  const match = markdown.match(fence);
+  if (!match) return { cleaned: markdown };
+  const code = match[0];
+  const json = code.replace(/^```json\n?/, '').replace(/```$/, '').trim();
+  const cleaned = markdown.replace(code, '').trim();
+  return { cleaned, jsonLd: json };
+}
+
 export function loadMarkdownBySlug(subdir: 'compare' | 'migrate' | 'blog', slug: string): LoadedMarkdown | null {
   const filePath = path.join(getContentDir(subdir), `${slug}.md`);
   if (!fs.existsSync(filePath)) return null;
   const file = fs.readFileSync(filePath, 'utf8');
   const { data, content } = matter(file);
-  const html = md.render(content);
-  return { frontmatter: data || {}, html, raw: content };
+  const { cleaned, jsonLd } = extractJsonLd(content);
+  const html = md.render(cleaned);
+  return { frontmatter: data || {}, html, raw: cleaned, jsonLd };
 }
 
 
