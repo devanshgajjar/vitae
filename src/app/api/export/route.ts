@@ -5,44 +5,57 @@ import { ExportRequest } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
-    const body: ExportRequest = await request.json();
+    const body: ExportRequest & { content_md?: string; kind?: 'resume' | 'cover_letter' } = await request.json();
     
-    if (!body.document_id || !body.format) {
+    if ((!body.document_id && !body.content_md) || !body.format) {
       return NextResponse.json(
-        { error: 'document_id and format are required' },
+        { error: 'document_id or content_md (one required) and format are required' },
         { status: 400 }
       );
     }
+    let markdownContent = body.content_md || '';
+    let candidateName = 'Candidate';
+    let role = 'Position';
+    let company = 'Company';
+    let kind: 'resume' | 'cover_letter' = body.kind || 'resume';
 
-    // Fetch the document
-    const document = await prisma.document.findUnique({
-      where: { id: body.document_id },
-      include: {
-        profile: true
+    let documentFound = false;
+
+    if (body.document_id && !body.content_md) {
+      // Fetch the document
+      const document = await prisma.document.findUnique({
+        where: { id: body.document_id },
+        include: {
+          profile: true
+        }
+      });
+
+      if (!document) {
+        if (!body.content_md) {
+          return NextResponse.json(
+            { error: 'Document not found' },
+            { status: 404 }
+          );
+        }
+      } else {
+        documentFound = true;
+        markdownContent = document.content_md;
+        const profile = document.profile;
+        const profileHeader = profile.header as any;
+        const fitAnalysis = document.fit_analysis as any;
+        candidateName = profileHeader?.name || candidateName;
+        role = fitAnalysis?.role || role;
+        company = fitAnalysis?.company || company;
+        kind = document.kind as 'resume' | 'cover_letter';
       }
-    });
-
-    if (!document) {
-      return NextResponse.json(
-        { error: 'Document not found' },
-        { status: 404 }
-      );
     }
-
-    const profile = document.profile;
-    const profileHeader = profile.header as any;
-    const fitAnalysis = document.fit_analysis as any;
     
     // Extract job details for filename
-    const candidateName = profileHeader?.name || 'Candidate';
-    const role = fitAnalysis?.role || 'Position';
-    const company = fitAnalysis?.company || 'Company';
-    
     const filename = generateFilename(
       candidateName,
       role,
       company,
-      document.kind as 'resume' | 'cover_letter',
+      kind,
       body.format
     );
 
@@ -51,17 +64,17 @@ export async function POST(request: NextRequest) {
 
     switch (body.format) {
       case 'pdf':
-        blob = await exportToPDF(document.content_md, filename);
+        blob = await exportToPDF(markdownContent, filename);
         contentType = 'text/html'; // Changed to HTML since we're generating HTML for browser PDF conversion
         break;
       
       case 'docx':
-        blob = await exportToDOCX(document.content_md, filename);
+        blob = await exportToDOCX(markdownContent, filename);
         contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         break;
       
       case 'md':
-        blob = exportToMarkdown(document.content_md, filename);
+        blob = exportToMarkdown(markdownContent, filename);
         contentType = 'text/markdown';
         break;
       

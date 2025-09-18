@@ -509,7 +509,7 @@ What We Offer:
                     <div className="flex gap-2">
                       <Button 
                         size="sm" 
-                        onClick={() => handleExport(generatedDocuments.document_id, 'pdf')}
+                        onClick={() => handleExport(generatedDocuments.document_id || 'demo-doc-id', 'pdf')}
                         className="bg-blue-600 hover:bg-blue-700 text-white"
                       >
                         <Download className="w-3 h-3 mr-1" />
@@ -518,7 +518,7 @@ What We Offer:
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        onClick={() => handleExport(generatedDocuments.document_id, 'docx')}
+                        onClick={() => handleExport(generatedDocuments.document_id || 'demo-doc-id', 'docx')}
                       >
                         <Download className="w-3 h-3 mr-1" />
                         DOCX
@@ -526,7 +526,7 @@ What We Offer:
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        onClick={() => handleExport(generatedDocuments.document_id, 'md')}
+                        onClick={() => handleExport(generatedDocuments.document_id || 'demo-doc-id', 'md')}
                       >
                         <Download className="w-3 h-3 mr-1" />
                         MD
