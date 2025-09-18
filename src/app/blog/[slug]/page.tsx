@@ -1,11 +1,9 @@
 import { Metadata } from 'next';
-import { getAllSlugs, loadMarkdownBySlug } from '@/lib/md';
+import { loadMarkdownBySlug } from '@/lib/md';
+
+export const dynamic = 'force-dynamic';
 
 type Params = { params: { slug: string } };
-
-export async function generateStaticParams() {
-  return getAllSlugs('blog').map((slug) => ({ slug }));
-}
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const md = loadMarkdownBySlug('blog', params.slug);
