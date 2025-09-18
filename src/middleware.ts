@@ -10,17 +10,27 @@ export async function middleware(request: NextRequest) {
     '/',
     '/auth/sign-in',
     '/create',
+    '/pricing',
+    '/faq',
+    '/compare',
+    '/migrate',
+    '/blog',
+    '/version',
     '/api/auth/signin',
     '/api/auth/signup',
     '/api/auth/me',
     '/api/auth/signout',
     '/api/generate', // Allow for both demo and authenticated usage
-    // '/api/profiles', // Protected so we always resolve the authenticated user
-    // '/api/documents', // Protected to bind to authenticated user data
   ];
 
   // Check if it's a public route
-  if (publicRoutes.includes(pathname) || pathname.startsWith('/api/auth/')) {
+  const isPublicPrefix = (
+    pathname.startsWith('/compare') ||
+    pathname.startsWith('/migrate') ||
+    pathname.startsWith('/blog')
+  );
+
+  if (publicRoutes.includes(pathname) || pathname.startsWith('/api/auth/') || isPublicPrefix) {
     return NextResponse.next();
   }
 
