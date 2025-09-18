@@ -264,7 +264,7 @@ export default function DashboardPage() {
                 <Link href={`/create?profile_id=${activeProfile.id}`}>
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium">
                     <FileText className="w-4 h-4 mr-2" />
-                    Generate your Vitae
+                    Create Resume & Cover Letter
                   </Button>
                 </Link>
               ) : (
@@ -379,7 +379,7 @@ export default function DashboardPage() {
             <div className="p-8 text-center">
               <User className="w-12 h-12 mx-auto text-gray-300 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Profile Selected</h3>
-              <p className="text-gray-500 mb-4">Create your first profile or select an existing one from the profile switcher above</p>
+              <p className="text-gray-500 mb-4">Create your first profile to start generating resumes and cover letters.</p>
               <Link href="/import">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium">
                   <Plus className="w-4 h-4 mr-2" />
