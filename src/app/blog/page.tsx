@@ -15,26 +15,31 @@ export default function BlogIndexPage() {
   const playbooks = items.filter(i => !i.isPillar);
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-6">Vitae Blog</h1>
-      <section className="mb-10">
+    <main>
+      <header className="bg-white border-b">
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <h1 className="text-3xl font-semibold mb-2">Vitae Blog</h1>
+          <p className="text-gray-600">ATS-first resumes, cover letters, and job-seeker playbooks.</p>
+        </div>
+      </header>
+      <section className="max-w-5xl mx-auto px-6 py-8">
         <h2 className="text-2xl font-semibold mb-4">Pillars</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {pillars.map((it) => (
-            <Link key={it.slug} href={`/blog/${it.slug}`} className="block rounded-lg border p-5 hover:shadow-md bg-white">
-              <h3 className="text-xl font-semibold mb-2">{it.title}</h3>
-              <p className="text-gray-600">{it.description}</p>
+            <Link key={it.slug} href={`/blog/${it.slug}`} className="rounded-lg border p-5 bg-white hover:shadow-sm">
+              <h3 className="text-lg font-semibold mb-1">{it.title}</h3>
+              <p className="text-gray-600 text-sm">{it.description}</p>
             </Link>
           ))}
         </div>
       </section>
-      <section>
+      <section className="max-w-5xl mx-auto px-6 pb-10">
         <h2 className="text-2xl font-semibold mb-4">Playbooks</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {playbooks.map((it) => (
-            <Link key={it.slug} href={`/blog/${it.slug}`} className="block rounded-lg border p-5 hover:shadow-md bg-white">
-              <h3 className="text-xl font-semibold mb-2">{it.title}</h3>
-              <p className="text-gray-600">{it.description}</p>
+            <Link key={it.slug} href={`/blog/${it.slug}`} className="rounded-lg border p-5 bg-white hover:shadow-sm">
+              <h3 className="text-lg font-semibold mb-1">{it.title}</h3>
+              <p className="text-gray-600 text-sm">{it.description}</p>
             </Link>
           ))}
         </div>

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: #ffffff;
@@ -59,6 +60,20 @@ body {
   line-height: 1.6;
   font-weight: 400;
 }
+
+/* Typography base for MD content */
+.prose {
+  max-width: 72ch;
+}
+.prose h1, .prose h2, .prose h3 { scroll-margin-top: 80px; }
+.prose h1 { font-weight: 700; }
+.prose h2 { margin-top: 2.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.3rem; }
+.prose table { width: 100%; border-collapse: collapse; }
+.prose table th, .prose table td { border: 1px solid #e5e7eb; padding: 0.5rem 0.75rem; }
+.prose thead th { background: #f3f4f6; }
+.prose ul li::marker { color: #3b82f6; }
+.prose a { color: #2563eb; text-decoration: none; }
+.prose a:hover { text-decoration: underline; }
 
 /* Smooth transitions for better UX */
 * {

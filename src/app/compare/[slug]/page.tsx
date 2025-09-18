@@ -16,13 +16,22 @@ export default function ComparePage({ params }: Params) {
   const md = loadMarkdownBySlug('compare', params.slug);
   if (!md) return <div className="prose mx-auto p-6">Not found</div>;
   return (
-    <article className="prose prose-zinc mx-auto p-6">
-      <h1>{(md.frontmatter.title as string) || 'Compare'}</h1>
-      <div dangerouslySetInnerHTML={{ __html: md.html }} />
-      {md.jsonLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: md.jsonLd }} />
-      )}
-    </article>
+    <main>
+      <header className="bg-white border-b">
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <h1 className="text-3xl font-semibold">{(md.frontmatter.title as string) || 'Compare'}</h1>
+          <p className="text-gray-600 mt-2">{(md.frontmatter.description as string) || ''}</p>
+        </div>
+      </header>
+      <article className="max-w-5xl mx-auto px-6 py-8">
+        <div className="prose">
+          <div dangerouslySetInnerHTML={{ __html: md.html }} />
+        </div>
+        {md.jsonLd && (
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: md.jsonLd }} />
+        )}
+      </article>
+    </main>
   );
 }
 

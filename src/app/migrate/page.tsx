@@ -9,17 +9,21 @@ export default function MigrateIndexPage() {
   });
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-6">Switch to Vitae</h1>
-      <p className="text-gray-600 mb-8">Step-by-step guides to migrate from popular builders.</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <main>
+      <header className="bg-white border-b">
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <h1 className="text-3xl font-semibold mb-2">Switch to Vitae</h1>
+          <p className="text-gray-600">Export → Import → ATS check → Tailor → Download.</p>
+        </div>
+      </header>
+      <section className="max-w-5xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         {items.map((it) => (
-          <Link key={it.slug} href={`/migrate/${it.slug}`} className="block rounded-lg border p-5 hover:shadow-md bg-white">
-            <h2 className="text-xl font-semibold mb-2">{it.title || it.slug}</h2>
-            <p className="text-gray-600">{it.description}</p>
+          <Link key={it.slug} href={`/migrate/${it.slug}`} className="rounded-lg border p-5 bg-white hover:shadow-sm">
+            <h2 className="text-lg font-semibold mb-1">{it.title || it.slug}</h2>
+            <p className="text-gray-600 text-sm">{it.description}</p>
           </Link>
         ))}
-      </div>
+      </section>
     </main>
   );
 }
