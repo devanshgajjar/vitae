@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { ProfileCompletionDetails, calculateProfileCompletion } from '@/lib/profile-completion';
 
 export interface Profile {
@@ -52,15 +53,23 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: Replace with actual user ID from authentication
-  const userId = 'demo-user-123';
+  // Use authenticated user from AuthContext
+  const { user, loading: authLoading } = useAuth();
 
   const loadProfiles = async () => {
     setIsLoading(true);
     setError(null);
     
     try {
-      const response = await fetch(`/api/profiles?user_id=${userId}`);
+      // Rely on auth cookie; do not send demo user ID in production
+      const response = await fetch('/api/profiles', {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
       if (!response.ok) {
         throw new Error('Failed to load profiles');
       }
@@ -95,8 +104,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
-          user_id: userId,
           name: profileData.name || 'New Profile',
           profile_data: profileData
         }),
@@ -122,6 +131,7 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           name: profileData.name,
           profile_data: profileData
@@ -145,6 +155,7 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     try {
       const response = await fetch(`/api/profiles/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -175,8 +186,11 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   };
 
   useEffect(() => {
-    loadProfiles();
-  }, []);
+    // Load profiles once auth is ready (prevents first-call missing cookie)
+    if (!authLoading) {
+      loadProfiles();
+    }
+  }, [authLoading]);
 
   const value: ProfileContextType = {
     profiles,
