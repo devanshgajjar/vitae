@@ -15,8 +15,8 @@ export async function middleware(request: NextRequest) {
     '/api/auth/me',
     '/api/auth/signout',
     '/api/generate', // Allow for both demo and authenticated usage
-    '/api/profiles', // Allow for demo usage
-    '/api/documents', // Allow for demo usage
+    // '/api/profiles', // Protected so we always resolve the authenticated user
+    // '/api/documents', // Protected to bind to authenticated user data
   ];
 
   // Check if it's a public route
