@@ -14,11 +14,10 @@ import {
   Download, 
   Clock,
   Sparkles,
-  Target,
   Loader2
 } from 'lucide-react';
 import Link from 'next/link';
-import { FitAnalysis } from '@/types';
+// Fit analysis removed
 
 interface Profile {
   id: string;
@@ -50,8 +49,7 @@ function CreatePageContent() {
   const [selectedProfile, setSelectedProfile] = useState<string>('');
   const [jobDescription, setJobDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isParsing, setIsParsing] = useState(false);
-  const [fitAnalysis, setFitAnalysis] = useState<FitAnalysis | null>(null);
+  // Fit analysis removed
   const [generatedDocuments, setGeneratedDocuments] = useState<GeneratedDocuments | null>(null);
   const [activePreview, setActivePreview] = useState<'resume' | 'cover_letter'>('resume');
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
@@ -222,68 +220,7 @@ What We Offer:
 • Modern tech stack and tools`);
   };
 
-  const handleParseJD = async () => {
-    if (!jobDescription.trim()) return;
-    
-    setIsParsing(true);
-    try {
-      const response = await fetch('/api/parse-jd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          job_description: jobDescription.trim()
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to parse job description');
-      }
-
-      const data = await response.json();
-      
-      // Now run fit analysis with the parsed JD
-      await runFitAnalysis(data.job_description);
-      
-    } catch (error) {
-      console.error('Parse JD error:', error);
-      alert('Failed to parse job description. Please try again.');
-    } finally {
-      setIsParsing(false);
-    }
-  };
-
-  const runFitAnalysis = async (parsedJD: Record<string, unknown>) => {
-    if (!selectedProfile) {
-      alert('Please select a profile first');
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/fit-analysis', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          profile_id: selectedProfile,
-          job_description: parsedJD
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to analyze fit');
-      }
-
-      const data = await response.json();
-      setFitAnalysis(data.fit_analysis);
-      
-    } catch (error) {
-      console.error('Fit analysis error:', error);
-      alert('Failed to analyze fit. Please try again.');
-    }
-  };
+  // Fit analysis removed
 
   const handleGenerate = async () => {
     if (!selectedProfile || !jobDescription.trim()) {
@@ -515,25 +452,6 @@ What We Offer:
 
                 <div className="flex gap-3">
                   <Button 
-                    onClick={handleParseJD}
-                    disabled={!jobDescription.trim() || isParsing}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    {isParsing ? (
-                      <>
-                        <Clock className="w-4 h-4 mr-2 animate-spin" />
-                        Analyzing...
-                      </>
-                    ) : (
-                      <>
-                        <Target className="w-4 h-4 mr-2" />
-                        Analyze Fit
-                      </>
-                    )}
-                  </Button>
-                  
-                  <Button 
                     onClick={handleGenerate}
                     disabled={!selectedProfile || !jobDescription.trim() || isGenerating}
                     className="flex-1"
@@ -546,7 +464,7 @@ What We Offer:
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4 mr-2" />
-                        Generate
+                        Generate Resume and CV
                       </>
                     )}
                   </Button>
@@ -554,64 +472,7 @@ What We Offer:
               </div>
             </div>
 
-            {/* Fit Analysis */}
-            {fitAnalysis && (
-              <div className="bg-white dark:bg-white rounded-lg shadow-sm border border-gray-200 dark:border-gray-200 p-6">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900">Fit Analysis</h3>
-                
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Overall Match</span>
-                    <span className="text-lg font-bold text-blue-700">
-                      {fitAnalysis.overall_score}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div 
-                      className="bg-blue-600 h-3 rounded-full transition-all duration-300" 
-                      style={{ width: `${fitAnalysis.overall_score}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-medium text-sm mb-2 text-gray-700">Skill Matches</h4>
-                    <div className="space-y-1">
-                      {fitAnalysis.skill_matches.map((match, index: number) => (
-                        <div key={index} className="flex items-center justify-between text-sm">
-                          <span className="text-gray-900">{match.skill}</span>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            match.status === 'exact' ? 'bg-green-100 text-green-800 border border-green-200' :
-                            match.status === 'related' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
-                            'bg-red-100 text-red-800 border border-red-200'
-                          }`}>
-                            {match.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {fitAnalysis.gaps.length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm mb-2 text-orange-600">Gaps to Address</h4>
-                      <div className="space-y-1">
-                        {fitAnalysis.gaps.map((gap, index: number) => (
-                          <div key={index} className="text-sm">
-                            <div className="flex items-center justify-between">
-                              <span className="text-red-700 font-medium">• {(gap as any).skill || gap}</span>
-                              <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded font-medium">{(gap as any).priority || 'medium'} priority</span>
-                            </div>
-                            <p className="text-xs text-gray-700 ml-2 mt-1">{(gap as any).suggestion || ''}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+            {/* Fit Analysis removed */}
           </div>
 
           {/* Right Column - Preview */}
