@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -57,13 +58,14 @@ function CreatePageContent() {
   const [, setSelectedProfileData] = useState<Profile | null>(null);
   const [isDemoProfileLoaded, setIsDemoProfileLoaded] = useState(false);
 
-  // TODO: Replace with actual user ID from authentication
-  const userId = 'demo-user-123';
+  // Auth state to ensure cookie is present before fetching
+  const { loading: authLoading } = useAuth();
 
   useEffect(() => {
-    console.log('Component mounted, loading profiles...');
-    loadProfiles();
-  }, []);
+    if (!authLoading) {
+      loadProfiles();
+    }
+  }, [authLoading]);
 
   // Handle profile_id from import redirect
   useEffect(() => {
@@ -116,7 +118,12 @@ function CreatePageContent() {
 
   const loadProfiles = async () => {
     try {
-      const response = await fetch(`/api/profiles?user_id=${userId}`);
+      const response = await fetch('/api/profiles', {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json' }
+      });
       if (response.ok) {
         const data = await response.json();
         setProfiles(data.profiles || []);
