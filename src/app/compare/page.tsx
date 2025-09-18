@@ -5,7 +5,9 @@ export default function CompareIndexPage() {
   const slugs = getAllSlugs('compare');
   const items = slugs.map((slug) => {
     const md = loadMarkdownBySlug('compare', slug);
-    return { slug, title: md?.frontmatter?.title as string, description: md?.frontmatter?.description as string };
+    const title = (md?.frontmatter?.title as string) || slug;
+    const description = (md?.frontmatter?.description as string) || '';
+    return { slug, title, description };
   });
 
   return (

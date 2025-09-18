@@ -1,6 +1,6 @@
 ---
 title: Zety vs Vitae — Which Resume Builder Wins for ATS, Speed, and Cost in 2025
-description: Zety vs Vitae compared: ATS safety, JD tailoring speed, pricing, downloads, cancellation, and support for non‑native English writers.
+description: "Zety vs Vitae compared: ATS safety, JD tailoring speed, pricing, downloads, cancellation, and support for non‑native English writers."
 slug: compare/zety-vs-vitae
 date: 2025-09-18
 lastmod: 2025-09-18
