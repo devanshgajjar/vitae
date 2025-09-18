@@ -1,6 +1,6 @@
 ---
 title: VisualCV vs Vitae — Portfolio Looks vs ATS Results
-description: VisualCV vs Vitae: compare ATS readiness, JD tailoring, and cost.
+description: "VisualCV vs Vitae: compare ATS readiness, JD tailoring, and cost."
 slug: compare/visualcv-vs-vitae
 date: 2025-09-18
 author: Vitae Editorial — Resume & ATS Specialists

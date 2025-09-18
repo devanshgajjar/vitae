@@ -1,6 +1,6 @@
 ---
 title: Zety vs Vitae — Pricing, ATS Results, and Speed (2025)
-description: Compare Zety vs Vitae. ATS-first resumes, JD-tailoring in minutes, and micro-pricing: $1/mo (1) or $3/mo (5). Free for first 20 users.
+description: "Compare Zety vs Vitae. ATS-first resumes, JD-tailoring in minutes, and micro-pricing: $1/mo (1) or $3/mo (5). Free for first 20 users."
 slug: compare/zety-vs-vitae
 date: 2025-09-18
 author: Vitae Editorial — Resume & ATS Specialists

@@ -1,6 +1,6 @@
 ---
 title: Enhancv vs Vitae — Design Flair or ATS-First? (2025)
-description: Enhancv vs Vitae: who wins for ATS results, speed, and cost.
+description: "Enhancv vs Vitae: who wins for ATS results, speed, and cost."
 slug: compare/enhancv-vs-vitae
 date: 2025-09-18
 author: Vitae Editorial — Resume & ATS Specialists

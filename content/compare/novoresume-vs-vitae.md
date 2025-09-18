@@ -1,6 +1,6 @@
 ---
 title: NovoResume vs Vitae — Which Builder Wins in 2025?
-description: NovoResume vs Vitae comparison: ATS success rate, JD-tailoring speed, and true cost.
+description: "NovoResume vs Vitae comparison: ATS success rate, JD-tailoring speed, and true cost."
 slug: compare/novoresume-vs-vitae
 date: 2025-09-18
 author: Vitae Editorial — Resume & ATS Specialists

@@ -1,6 +1,6 @@
 ---
 title: ResumeGenius vs Vitae — Which Gets You Hired Faster?
-description: ResumeGenius vs Vitae: ATS reliability, JD-tailoring time, and pricing compared.
+description: "ResumeGenius vs Vitae: ATS reliability, JD-tailoring time, and pricing compared."
 slug: compare/resumegenius-vs-vitae
 date: 2025-09-18
 author: Vitae Editorial — Resume & ATS Specialists

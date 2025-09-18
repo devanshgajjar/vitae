@@ -99,11 +99,15 @@ export async function exportToPDF(markdownContent: string, filename: string): Pr
         ul {
           margin: 4pt 0 8pt 0;
           padding-left: 18pt;
+          page-break-inside: avoid;
+          break-inside: avoid;
         }
         
         li {
           margin: 2pt 0;
           line-height: 1.15;
+          page-break-inside: avoid;
+          break-inside: avoid;
         }
         
         /* Professional Summary */
@@ -155,11 +159,30 @@ export async function exportToPDF(markdownContent: string, filename: string): Pr
         /* Page breaks */
         .page-break {
           page-break-before: always;
+          break-before: page;
         }
         
         .no-break {
           page-break-inside: avoid;
+          break-inside: avoid;
         }
+        
+        /* Avoid breaking immediately after headers */
+        h1, h2, h3 {
+          break-after: avoid;
+          page-break-after: avoid;
+        }
+        
+        /* Keep header block together */
+        .header { page-break-inside: avoid; break-inside: avoid; }
+        
+        /* Keep common sections together */
+        .summary, .skills-section, .education-entry, .experience-entry, .skill-category {
+          page-break-inside: avoid; break-inside: avoid;
+        }
+        
+        /* Prevent single lines at page start/end */
+        p, li { orphans: 2; widows: 2; }
         
         /* Print optimizations */
         @media print {
